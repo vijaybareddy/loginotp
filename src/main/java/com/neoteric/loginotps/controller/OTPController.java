@@ -1,10 +1,12 @@
 package com.neoteric.loginotps.controller;
 
 import com.neoteric.loginotps.model.OTP;
+import com.neoteric.loginotps.request.PhoneNumberRequest;
 import com.neoteric.loginotps.services.OTPService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,18 +20,19 @@ public class OTPController {
     /**
      * API to generate and send OTP to the given phone number.
      *
-     * @param phoneNumber The phone number to which the OTP will be sent.
+//     * @param phoneNumber The phone number to which the OTP will be sent.
      * @return ResponseEntity containing the success or failure message.
      */
     @PostMapping("/send")
-    public ResponseEntity<String> sendOtp(@Valid @RequestBody String phoneNumber) {
+    @Validated
+    public ResponseEntity<String> sendOtp(@Valid @RequestBody PhoneNumberRequest phoneNumberRequest) {
         try {
-            if (phoneNumber == null || phoneNumber.isEmpty()) {
+            if (phoneNumberRequest == null || phoneNumberRequest.getPhoneNumber()==null || phoneNumberRequest.getPhoneNumber().isEmpty()) {
                 return ResponseEntity.badRequest().body("Phone number is required.");
             }
 
             // Generate and send OTP
-            OTP otpDetails = otpService.generateAndSendOtp(phoneNumber);
+            OTP otpDetails = otpService.generateAndSendOtp(phoneNumberRequest.getPhoneNumber());
 
             return ResponseEntity.ok("OTP sent successfully to " + otpDetails + ".");
 
