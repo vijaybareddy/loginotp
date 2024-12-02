@@ -3,6 +3,7 @@ package com.neoteric.loginotps.controller;
 import com.neoteric.loginotps.model.OTP;
 import com.neoteric.loginotps.request.PhoneNumberRequest;
 import com.neoteric.loginotps.services.OTPService;
+import com.neoteric.loginotps.services.SmsService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,8 @@ public class OTPController {
 
     @Autowired
     private OTPService otpService;
-
+    @Autowired
+    private SmsService smsService;
     /**
      * API to generate and send OTP to the given phone number.
      *
@@ -43,7 +45,18 @@ public class OTPController {
             return ResponseEntity.internalServerError().body("Failed to send OTP: " + e.getMessage());
         }
     }
+
+    @PostMapping("/resend")
+    public ResponseEntity<String> resendOtp(@Valid @RequestBody PhoneNumberRequest phoneNumberRequest) {
+        try {
+            String response = smsService.sendOtp(phoneNumberRequest.getPhoneNumber(), "123456"); // Dummy OTP for example
+            return ResponseEntity.ok("OTP resent successfully: " + response);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Failed to resend OTP: " + e.getMessage());
+        }
+    }
 }
-    // Return success response
+
+     // Return success response
     //  return ResponseEntity.ok("OTP sent successfully to " + phoneNumber + ".");
     // return ResponseEntity.ok("phone"+otpDetails);

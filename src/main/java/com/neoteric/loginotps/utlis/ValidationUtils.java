@@ -35,5 +35,4 @@ public class ValidationUtils {
             System.out.println("Phone number: " + number + " is valid? " + isValidPhoneNumber(number));
         }
     }
-
 }

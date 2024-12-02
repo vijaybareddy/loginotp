@@ -15,8 +15,8 @@ public class OTPService {
 
     private final OTPRepository otpRepository;
 
-    @Value("${fast2sms.api-key}")
-    private String apiKey;
+
+    private SmsService smsService;//Inject SmsServices
 
     private static final int OTP_EXPIRY_DURATION_MINUTES = 5;
 
@@ -104,7 +104,6 @@ public class OTPService {
      * @return True if OTP is valid and not expired, false otherwise.
      */
     public boolean verifyOtp(String phoneNumber, String otpCode) {
-        // Retrieve the most recent OTP record for the phone number
         OTP otp = otpRepository.findTopByPhoneNumberOrderByExpiryDateDesc(phoneNumber)
                 .orElseThrow(() -> new IllegalArgumentException("No OTP found for the provided phone number"));
 
